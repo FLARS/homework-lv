@@ -35,9 +35,9 @@ public class LoanController {
     @GetMapping(value = "/clients/{clientId}")
     @ApiOperation(value = "Get all loans(incl. extended ones) by client Id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Loans of the client has been retrieved"),
+            @ApiResponse(code = 200, message = "Client loans retrieved"),
             @ApiResponse(code = 400, message = "Invalid client id has been provided"),
-            @ApiResponse(code = 404, message = "There is no loans found for requested client")
+            @ApiResponse(code = 404, message = "There are no loans found for requested client")
     })
     public ResponseEntity<List<LoanDTO>> getClientLoans(@PathVariable Long clientId) {
         List<Loan> clientLoans = facade.findLoansByClientId(clientId);

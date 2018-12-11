@@ -86,11 +86,4 @@ public class LoanServiceImplTest {
         verify(repository).save(loan);
     }
 
-    private List<Loan> setupClientLoans() {
-        List<Loan> loans = new ArrayList<>();
-        loans.add(setupLoan());
-        loans.add(setupLoan());
-        loans.add(setupLoan());
-        return loans;
-    }
 }

@@ -1,4 +1,4 @@
-package io.fourfinanceit.integration;
+package io.fourfinanceit.integration.rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fourfinanceit.domain.Client;

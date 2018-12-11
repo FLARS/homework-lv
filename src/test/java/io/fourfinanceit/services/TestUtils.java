@@ -8,12 +8,15 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestUtils {
 
     public static final Long DEFAULT_ID = 1L;
     public static final String TEST_NAME = "TestName";
     public static final String TEST_SECOND_NAME = "TestSecondName";
+    public static final String CURRENCY_USD = "USD";
     static final String INVALID_NAME = "InvalidName";
     static final String INVALID_SECOND_NAME = "InvalidSecondName";
     static final Long INVALID_ID = 2L;
@@ -26,7 +29,7 @@ public class TestUtils {
         return client;
     }
 
-    static Loan setupLoan() {
+    public static Loan setupLoan() {
         Loan loan = new Loan();
         loan.setId(DEFAULT_ID);
         loan.setAmount(BigDecimal.valueOf(1000));
@@ -39,7 +42,15 @@ public class TestUtils {
         return loan;
     }
 
-    static HttpServletRequest setupRequest() {
+    public static List<Loan> setupClientLoans() {
+        List<Loan> loans = new ArrayList<>();
+        loans.add(setupLoan());
+        loans.add(setupLoan());
+        loans.add(setupLoan());
+        return loans;
+    }
+
+    public static HttpServletRequest setupRequest() {
         return new MockHttpServletRequest();
     }
 }
