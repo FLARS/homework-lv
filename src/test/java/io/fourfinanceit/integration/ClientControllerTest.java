@@ -59,8 +59,8 @@ public class ClientControllerTest {
 
     @Test
     public void createClient() throws Exception {
-        final ObjectMapper mapper = new ObjectMapper();
-        final String requestBody = mapper.writeValueAsString(clientDTO);
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(clientDTO);
         mockMvc.perform(post("/api/clients")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
@@ -69,8 +69,8 @@ public class ClientControllerTest {
 
     @Test
     public void updateClient() throws Exception {
-        final ObjectMapper mapper = new ObjectMapper();
-        final String requestBody = mapper.writeValueAsString(clientDTO);
+        ObjectMapper mapper = new ObjectMapper();
+        String requestBody = mapper.writeValueAsString(clientDTO);
         mockMvc.perform(put("/api/clients/{clientId}", DEFAULT_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
