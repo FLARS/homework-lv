@@ -1,4 +1,4 @@
-package io.fourfinanceit.rest;
+package io.fourfinanceit.integration.rest;
 
 import org.omg.CORBA.portable.ApplicationException;
 import org.springframework.http.HttpStatus;

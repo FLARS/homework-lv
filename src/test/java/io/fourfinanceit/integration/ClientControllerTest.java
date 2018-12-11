@@ -1,10 +1,11 @@
-package io.fourfinanceit.rest;
+package io.fourfinanceit.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fourfinanceit.domain.Client;
+import io.fourfinanceit.facades.ClientFacade;
 import io.fourfinanceit.mapping.Mapper;
-import io.fourfinanceit.rest.dto.ClientDTO;
-import io.fourfinanceit.services.ClientService;
+import io.fourfinanceit.integration.rest.controllers.ClientController;
+import io.fourfinanceit.integration.dto.ClientDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,7 @@ public class ClientControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ClientService service;
+    private ClientFacade facade;
     @MockBean
     private Mapper mapper;
 
@@ -42,8 +43,8 @@ public class ClientControllerTest {
         clientDTO = setupClientDTO();
         when(mapper.map(client, ClientDTO.class)).thenReturn(clientDTO);
         when(mapper.map(clientDTO, Client.class)).thenReturn(client);
-        when(service.updateClient(client, DEFAULT_ID)).thenReturn(client);
-        when(service.findClient(DEFAULT_ID)).thenReturn(client);
+        when(facade.updateClient(client, DEFAULT_ID)).thenReturn(client);
+        when(facade.findClient(DEFAULT_ID)).thenReturn(client);
     }
 
     @Test

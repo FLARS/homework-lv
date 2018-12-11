@@ -1,6 +1,6 @@
 package io.fourfinanceit.mapping;
 
-import io.fourfinanceit.rest.dto.LoanDTO;
+import io.fourfinanceit.integration.dto.LoanDTO;
 import io.fourfinanceit.domain.Client;
 import io.fourfinanceit.domain.Loan;
 import ma.glasnost.orika.CustomMapper;

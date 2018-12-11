@@ -1,21 +1,15 @@
-package io.fourfinanceit.rest.dto;
+package io.fourfinanceit.integration.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.fourfinanceit.mapping.serialization.LocalDateDeserializer;
 import io.fourfinanceit.mapping.serialization.LocalDateSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
 
-import javax.xml.bind.annotation.XmlElement;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -9,7 +9,7 @@ public interface LoanService {
 
     List<Loan> findLoansByClientId(Long clientId);
 
-    Loan findLoanById(Long loanId);
+    Loan findById(Long loanId);
 
     Long createLoan(Loan loan, HttpServletRequest request);
 

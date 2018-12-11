@@ -1,6 +1,5 @@
 package io.fourfinanceit.services;
 
-import io.fourfinanceit.domain.Client;
 import io.fourfinanceit.domain.Loan;
 import io.fourfinanceit.domain.LoanStatus;
 import io.fourfinanceit.domain.exceptions.EntityNotFoundException;
@@ -23,7 +22,6 @@ public class LoanServiceImpl implements LoanService {
     private static final float DEFAULT_INTEREST = 1.0f;
 
     private final LoanValidationService validationService;
-    private final ClientService clientService;
     private final LoanRepository repository;
 
     public List<Loan> findLoansByClientId(Long clientId) {
@@ -34,30 +32,23 @@ public class LoanServiceImpl implements LoanService {
         return clientLoans;
     }
 
-    public Loan findLoanById(Long loanId) {
+    public Loan findById(Long loanId) {
         return Optional.ofNullable(repository.findOne(loanId)).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional
     public Long createLoan(Loan loan, HttpServletRequest request) {
         validationService.validateRisk(loan, request);
-        Long clientId = loan.getClient().getId();
-        Client client = Optional
-                .ofNullable(clientService.findClient(clientId))
-                .orElseThrow(EntityNotFoundException::new);
-        loan.setClient(client);
         initCreationData(loan);
-        return repository.save(loan).getId();
+        Loan savedLoan = repository.save(loan);
+        return savedLoan.getId();
     }
 
     @Transactional
     public Loan extendLoan(Long loanId) {
-        Loan existingLoan = Optional
-                .ofNullable(repository.findOne(loanId))
-                .orElseThrow(EntityNotFoundException::new);
+        Loan existingLoan = findById(loanId);
         validationService.validateExtension(existingLoan);
-
-        initExtendData(existingLoan);
+        initExtensionData(existingLoan);
         return repository.save(existingLoan);
     }
 
@@ -68,7 +59,7 @@ public class LoanServiceImpl implements LoanService {
         loan.setInterest(DEFAULT_INTEREST);
     }
 
-    private void initExtendData(Loan existingLoan) {
+    private void initExtensionData(Loan existingLoan) {
         LocalDate newTermEnd = existingLoan.getTermEnd().plusMonths(1);
         existingLoan.setTermEnd(newTermEnd);
         existingLoan.setUpdatedDate(LocalDateTime.now());

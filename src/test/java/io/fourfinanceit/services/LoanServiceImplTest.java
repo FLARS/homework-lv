@@ -29,8 +29,6 @@ public class LoanServiceImplTest {
     @Mock
     private LoanValidationService validationService;
     @Mock
-    private ClientService clientService;
-    @Mock
     private LoanRepository repository;
 
     @InjectMocks
@@ -46,7 +44,6 @@ public class LoanServiceImplTest {
         when(repository.findOne(DEFAULT_ID)).thenReturn(loan);
         when(repository.findByClientId(DEFAULT_ID)).thenReturn(setupClientLoans());
         when(repository.save(loan)).thenReturn(loan);
-        when(clientService.findClient(DEFAULT_ID)).thenReturn(loan.getClient());
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -64,12 +61,12 @@ public class LoanServiceImplTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void testInvalidLoanId() {
-        loanService.findLoanById(INVALID_ID);
+        loanService.findById(INVALID_ID);
     }
 
     @Test
     public void testFindByLoanId() {
-        Loan loan = loanService.findLoanById(DEFAULT_ID);
+        Loan loan = loanService.findById(DEFAULT_ID);
 
         assertNotNull(loan);
     }
@@ -78,7 +75,6 @@ public class LoanServiceImplTest {
     public void createLoan() {
         loanService.createLoan(loan, request);
         verify(validationService).validateRisk(loan, request);
-        verify(clientService).findClient(loan.getClient().getId());
         verify(repository).save(loan);
     }
 

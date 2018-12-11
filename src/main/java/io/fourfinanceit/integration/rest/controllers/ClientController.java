@@ -1,9 +1,10 @@
-package io.fourfinanceit.rest;
+package io.fourfinanceit.integration.rest.controllers;
 
 
 import io.fourfinanceit.domain.Client;
+import io.fourfinanceit.facades.ClientFacade;
 import io.fourfinanceit.mapping.Mapper;
-import io.fourfinanceit.rest.dto.ClientDTO;
+import io.fourfinanceit.integration.dto.ClientDTO;
 import io.fourfinanceit.services.ClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +27,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @Api(tags = {"clients"}, description = "Clients API")
 public class ClientController {
 
-    private final ClientService service;
+    private final ClientFacade facade;
     private final Mapper mapper;
 
     @GetMapping(value = "/{clientId}")
@@ -37,9 +38,8 @@ public class ClientController {
             @ApiResponse(code = 404, message = "Client not found")
     })
     public ResponseEntity<ClientDTO> getClient(@PathVariable Long clientId) {
-        Client client = service.findClient(clientId);
-        ClientDTO clientDTO = mapper.map(client, ClientDTO.class);
-        return new ResponseEntity<>(clientDTO, HttpStatus.OK);
+        Client client = facade.findClient(clientId);
+        return new ResponseEntity<>(mapper.map(client, ClientDTO.class), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -48,8 +48,7 @@ public class ClientController {
             @ApiResponse(code = 400, message = "Invalid client body provided"),
     })
     public ResponseEntity createClient(@RequestBody ClientDTO clientDTO) {
-        Client mappedFromDTO = mapper.map(clientDTO, Client.class);
-        Long clientId = service.saveClient(mappedFromDTO);
+        Long clientId = facade.saveClient(mapper.map(clientDTO, Client.class));
 
         Link clientLocation = ControllerLinkBuilder
                 .linkTo(methodOn(ClientController.class).getClient(clientId))
@@ -67,18 +66,8 @@ public class ClientController {
             @ApiResponse(code = 400, message = "Invalid client body provided"),
     })
     public ResponseEntity<ClientDTO> updateClient(@RequestBody ClientDTO clientDTO, @PathVariable Long clientId) {
-        Client mappedFromDTO = mapper.map(clientDTO, Client.class);
-        Client client = service.updateClient(mappedFromDTO, clientId);
-        ClientDTO updateClient = mapper.map(client, ClientDTO.class);
-
-        Link loanLocation = ControllerLinkBuilder
-                .linkTo(methodOn(ClientController.class).getClient(client.getId()))
-                .withSelfRel()
-                .expand();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, loanLocation.getHref());
-        return new ResponseEntity<>(updateClient, headers, HttpStatus.OK);
+        Client updatedClient = facade.updateClient(mapper.map(clientDTO, Client.class), clientId);
+        return new ResponseEntity<>(mapper.map(updatedClient, ClientDTO.class), HttpStatus.OK);
     }
 
 }

@@ -1,11 +1,10 @@
-package io.fourfinanceit.rest;
+package io.fourfinanceit.integration.rest.controllers;
 
 
 import io.fourfinanceit.domain.Loan;
+import io.fourfinanceit.facades.LoanFacade;
+import io.fourfinanceit.integration.dto.LoanDTO;
 import io.fourfinanceit.mapping.Mapper;
-import io.fourfinanceit.rest.dto.LoanDTO;
-import io.fourfinanceit.services.IpAddressRequestService;
-import io.fourfinanceit.services.LoanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -30,8 +29,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @Api(tags = {"loans"}, description = "Loans API")
 public class LoanController {
 
-    private final LoanService loanService;
-    private final IpAddressRequestService ipAddressRequestService;
+    private final LoanFacade facade;
     private final Mapper mapper;
 
     @GetMapping(value = "/clients/{clientId}")
@@ -42,7 +40,7 @@ public class LoanController {
             @ApiResponse(code = 404, message = "There is no loans found for requested client")
     })
     public ResponseEntity<List<LoanDTO>> getClientLoans(@PathVariable Long clientId) {
-        List<Loan> clientLoans = loanService.findLoansByClientId(clientId);
+        List<Loan> clientLoans = facade.findLoansByClientId(clientId);
         List<LoanDTO> loanDTOS = mapper.mapList(clientLoans, LoanDTO.class);
         return new ResponseEntity<>(loanDTOS, HttpStatus.OK);
     }
@@ -55,7 +53,7 @@ public class LoanController {
             @ApiResponse(code = 404, message = "Loan has not been found")
     })
     public ResponseEntity<LoanDTO> getLoanById(@PathVariable Long loanId) {
-        Loan loan = loanService.findLoanById(loanId);
+        Loan loan = facade.findLoanById(loanId);
         LoanDTO loanDTO = mapper.map(loan, LoanDTO.class);
         return new ResponseEntity<>(loanDTO, HttpStatus.OK);
     }
@@ -67,9 +65,8 @@ public class LoanController {
             @ApiResponse(code = 400, message = "Invalid loan has been submitted")
     })
     public ResponseEntity registerLoan(@RequestBody LoanDTO loanDTO, HttpServletRequest request) {
-        ipAddressRequestService.addIpRequest(request);
         Loan loan = mapper.map(loanDTO, Loan.class);
-        Long loanId = loanService.createLoan(loan, request);
+        Long loanId = facade.registerLoan(loan, request);
 
         Link loanLocation = ControllerLinkBuilder
                 .linkTo(methodOn(LoanController.class).getLoanById(loanId))
@@ -89,17 +86,9 @@ public class LoanController {
             @ApiResponse(code = 404, message = "There is no loans found for requested client")
     })
     public ResponseEntity<LoanDTO> extendLoan(@PathVariable Long loanId) {
-        Loan extendedLoan = loanService.extendLoan(loanId);
+        Loan extendedLoan = facade.extendLoan(loanId);
         LoanDTO loanDTO = mapper.map(extendedLoan, LoanDTO.class);
-
-        Link loanLocation = ControllerLinkBuilder
-                .linkTo(methodOn(LoanController.class).getLoanById(loanId))
-                .withSelfRel()
-                .expand();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, loanLocation.getHref());
-        return new ResponseEntity<>(loanDTO, headers, HttpStatus.OK);
+        return new ResponseEntity<>(loanDTO, HttpStatus.OK);
     }
 
 }

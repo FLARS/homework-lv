@@ -22,7 +22,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     public Client updateClient(Client client, Long clientId) {
-        Client findClient = Optional.ofNullable(repository.findOne(clientId)).orElseThrow(EntityNotFoundException::new);
+        Client findClient = findClient(clientId);
         client.setId(findClient.getId());
         return repository.save(client);
     }

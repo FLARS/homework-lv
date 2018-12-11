@@ -19,7 +19,7 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("io.fourfinanceit.rest"))
+                .apis(RequestHandlerSelectors.basePackage("io.fourfinanceit.integration"))
                 .paths(PathSelectors.any())
                 .build();
     }
